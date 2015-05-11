@@ -1,0 +1,23 @@
+{
+  "name": "elm-brunch",
+  "version": "1.0.0",
+  "description": "Brunch plugin to compile Elm code (http://elm-lang.org)",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/madsflensted/elm-brunch"
+  },
+  "keywords": [
+    "elm",
+    "brunch.io"
+  ],
+  "author": "Mads Flensted-Urech",
+  "license": "The MIT License (MIT)",
+  "bugs": {
+    "url": "https://github.com/madsflensted/elm-brunch/issues"
+  },
+  "homepage": "https://github.com/madsflensted/elm-brunch"
+}
