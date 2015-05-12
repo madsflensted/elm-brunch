@@ -14,7 +14,7 @@ Then configure elm-brunch:
       ...
 
       elmBrunch: {
-        main: 'source/path/YourMainModule.elm',  // Set when elm code spans multiple files
+        main: 'source/path/YourMainModule.elm',  // Set it if yrou elm code spans multiple files
         compileTo: 'some/path/elm.js'            // defaults to 'elm.js' in paths.public 'js' folder
       }
    }
