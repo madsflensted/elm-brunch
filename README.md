@@ -14,9 +14,17 @@ Then configure elm-brunch:
       ...
 
       elmBrunch: {
-        main: 'source/path/YourMainModule.elm',  // Set it if yrou elm code spans multiple files
-        compileTo: 'some/path/elm.js'            // defaults to 'elm.js' in paths.public 'js' folder
+        // Set to the elm file(s) containing your "main" function 
+        // `elm make` handles all elm dependencies
+        mainModules: ['source/path/YourMainModule.elm'],
+        // Defaults to 'js/' folder in paths.public
+        outputFolder: 'some/path/'
       }
    }
 
+```
+
+The output filename is the lowercase version of the main module name:
+```
+YourMainModule.elm => outputFolder/yourmainmodule.elm
 ```
