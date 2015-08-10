@@ -1,6 +1,6 @@
 {
   "name": "elm-brunch",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Brunch plugin to compile Elm code (http://elm-lang.org)",
   "main": "index.js",
   "scripts": {
@@ -19,5 +19,11 @@
   "bugs": {
     "url": "https://github.com/madsflensted/elm-brunch/issues"
   },
-  "homepage": "https://github.com/madsflensted/elm-brunch"
+  "homepage": "https://github.com/madsflensted/elm-brunch",
+  "devDependencies": {
+    "chai": "^3.2.0",
+    "mocha": "^2.2.5",
+    "sinon": "^1.15.4",
+    "sinon-chai": "^2.8.0"
+  }
 }
