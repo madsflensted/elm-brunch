@@ -14,6 +14,8 @@ Then configure elm-brunch:
       ...
 
       elmBrunch: {
+        // Set to path where elm-package.json is located, defaults to project root
+        elmFolder: 'path/to/elm-files',
         // Set to the elm file(s) containing your "main" function 
         // `elm make` handles all elm dependencies
         mainModules: ['source/path/YourMainModule.elm'],
