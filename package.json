@@ -15,7 +15,7 @@
     "brunch.io"
   ],
   "author": "Mads Flensted-Urech",
-  "license": "The MIT License (MIT)",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/madsflensted/elm-brunch/issues"
   },
