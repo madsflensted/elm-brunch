@@ -18,6 +18,7 @@
       elm_config.mainModules = (config.plugins.elmBrunch || {}).mainModules;
       elm_config.elmFolder = (config.plugins.elmBrunch || {}).elmFolder || null;
       this.elm_config = elm_config;
+      this.skipedOnInit = {}
     }
 
     ElmCompiler.prototype.compile = function(data, file, callback) {
@@ -25,6 +26,12 @@
       var file_is_module_index = modules.indexOf(file);
       if (file_is_module_index >= 0) {
         modules = [modules[file_is_module_index]];
+      } else {
+        if (this.skipedOnInit[file]){
+        } else {
+          this.skipedOnInit[file] = true;
+          return callback(null, null);
+        }
       }
       var outputFolder = this.elm_config.outputFolder;
       var elmFolder = this.elm_config.elmFolder;
