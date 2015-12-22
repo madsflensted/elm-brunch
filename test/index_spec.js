@@ -176,28 +176,47 @@ describe('ElmCompiler', function (){
       });
     });
 
-    describe('when first run', function () {
-      beforeEach(function () {
-        config = JSON.parse(JSON.stringify(sampleConfig));
-        elmCompiler = new ElmCompiler(config);
+    describe('the initial run', function () {
+      describe('when main module is specified', function () {
+        beforeEach(function () {
+          config = JSON.parse(JSON.stringify(sampleConfig));
+          elmCompiler = new ElmCompiler(config);
+        });
+
+        it('should skip non main modules', function () {
+          var content = '';
+          elmCompiler.compile(content, 'File.elm', function(error) {
+            expect(error).to.not.be.ok;
+          });
+          expected = '';
+          expect(childProcess.exec).to.not.have.been.called;
+        });
+
+        it('should compile main modules', function () {
+          var content = '';
+          elmCompiler.compile(content, 'Test.elm', function(error) {
+            expect(error).to.not.be.ok;
+          });
+          expected = 'elm make --yes --output test/output/folder/test.js Test.elm';
+          expect(childProcess.exec).to.have.been.calledWith(expected, {cwd: null});
+        });
       });
 
-      it('should skip non main modules', function () {
-        var content = '';
-        elmCompiler.compile(content, 'File.elm', function(error) {
-          expect(error).to.not.be.ok;
+      describe('when no main module is specified', function () {
+        beforeEach(function () {
+          config = JSON.parse(JSON.stringify(sampleConfig));
+          delete config.plugins.elmBrunch.mainModules;
+          elmCompiler = new ElmCompiler(config);
         });
-        expected = '';
-        expect(childProcess.exec).to.not.have.been.called;
-      });
 
-      it('should compile main modules', function () {
-        var content = '';
-        elmCompiler.compile(content, 'Test.elm', function(error) {
-          expect(error).to.not.be.ok;
+        it('should compile all modules', function () {
+          var content = '';
+          elmCompiler.compile(content, 'Test.elm', function(error) {
+            expect(error).to.not.be.ok;
+          });
+          expected = 'elm make --yes --output test/output/folder/test.js Test.elm';
+          expect(childProcess.exec).to.have.been.calledWith(expected, {cwd: null});
         });
-        expected = 'elm make --yes --output test/output/folder/test.js Test.elm';
-        expect(childProcess.exec).to.have.been.calledWith(expected, {cwd: null});
       });
     });
   });
