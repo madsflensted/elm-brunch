@@ -19,6 +19,7 @@ Then configure elm-brunch:
         elmFolder: 'path/to/elm-files',
         // Set to the elm file(s) containing your "main" function
         // `elm make` handles all elm dependencies (required)
+        // relative to `elmFolder`
         mainModules: ['source/path/YourMainModule.elm'],
         // Defaults to 'js/' folder in paths.public (optional)
         outputFolder: 'some/path/'
