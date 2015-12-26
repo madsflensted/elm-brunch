@@ -174,6 +174,16 @@ describe('ElmCompiler', function (){
         expected = 'elm make --yes --output test/output/folder/test.js Test.elm';
         expect(childProcess.exec).to.have.been.calledWith(expected, {cwd: 'test/elm/folder'});
       });
+
+      it('normalises the brunch file path to the elmFolder path', function () {
+        var content = '';
+        elmCompiler.compile(content, 'test/elm/folder/Test.elm', function(error) {
+          expect(error).to.not.be.ok;
+        });
+        expected = 'elm make --yes --output test/output/folder/test.js Test.elm';
+        expect(childProcess.exec).to.have.been.calledWith(expected, {cwd: 'test/elm/folder'});
+      });
+
     });
 
     describe('the initial run', function () {

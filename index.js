@@ -21,7 +21,9 @@
       this.skipedOnInit = {}
     }
 
-    ElmCompiler.prototype.compile = function(data, file, callback) {
+    ElmCompiler.prototype.compile = function(data, inFile, callback) {
+      var elmFolder = this.elm_config.elmFolder;
+      var file = inFile.replace(new RegExp('^' + elmFolder + '[' + path.sep + ']?'), '');
       var modules = this.elm_config.mainModules || [file];
       var file_is_module_index = modules.indexOf(file);
       if (file_is_module_index >= 0) {
@@ -34,7 +36,6 @@
         }
       }
       var outputFolder = this.elm_config.outputFolder;
-      var elmFolder = this.elm_config.elmFolder;
       return modules.forEach(function(src) {
         var moduleName;
         moduleName = path.basename(src, '.elm').toLowerCase();
