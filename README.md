@@ -1,15 +1,16 @@
-# NOTE !!!
-Brunch 2.2.0 introduces a new way to write plugins, so use brunch 2.1.3 untill we get a chance to update (and figure out how to best handle backwards compatability). See [this issue](https://github.com/madsflensted/elm-brunch/issues/11)
- 
-
 # elm-brunch
 [Brunch](http://brunch.io) plugin to compile Elm code
 
 # Install Elm
 [Elm instalation instructions](http://elm-lang.org/Install.elm)
 
+# Install elm-brunch
+```
+npm install --save elm-brunch
+```
+
 # Tips
-Update the "source-directories" property in the elm-package.json file if you want to compile multifile elm projects.
+Update the "source-directories" property in the elm-package.json file if you want to compile multi-file elm projects.
 Then configure elm-brunch:
 
 ```

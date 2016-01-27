@@ -145,8 +145,9 @@ describe('ElmCompiler', function (){
 
       it('shells out to the `elm make` command with a null cwd', function () {
         var content = '';
-        elmCompiler.compile(content, 'File.elm', function(error) {
+        elmCompiler.compile(content, 'File.elm', function(error, data) {
           expect(error).to.not.be.ok;
+          expect(data).to.equal('');
         });
         elmCompiler.compile(content, 'File.elm', function(error) {
           expect(error).to.not.be.ok;
@@ -195,8 +196,9 @@ describe('ElmCompiler', function (){
 
         it('should skip non main modules', function () {
           var content = '';
-          elmCompiler.compile(content, 'File.elm', function(error) {
+          elmCompiler.compile(content, 'File.elm', function(error, data) {
             expect(error).to.not.be.ok;
+            expect(data).to.equal('');
           });
           expected = '';
           expect(childProcess.exec).to.not.have.been.called;

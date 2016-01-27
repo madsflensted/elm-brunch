@@ -32,7 +32,7 @@
         if (this.skipedOnInit[file]){
         } else {
           this.skipedOnInit[file] = true;
-          return callback(null, null);
+          return callback(null, '');
         }
       }
       var outputFolder = this.elm_config.outputFolder;
@@ -56,7 +56,7 @@
     console.log(info);
 
     childProcess.exec('elm make --yes --output ' + outputFile + ' ' + srcFile, {cwd: elmFolder}, function (error, stdout, stderr){
-      return callback(error, error ? stderr : null);
+      return callback(error, error ? stderr : '');
     });
   };
 
