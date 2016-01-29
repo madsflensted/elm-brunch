@@ -118,6 +118,17 @@ describe('ElmCompiler', function (){
           expect(elmCompiler.elm_config.elmFolder).to.equal('test/elm/folder');
         });
       });
+      describe('when an elmFolder has Windows syntax', function () {
+        beforeEach(function () {
+          config = JSON.parse(JSON.stringify(baseConfig));
+          config.plugins.elmBrunch.elmFolder = 'test\\elm\\folder'
+          elmCompiler = new ElmCompiler(config);
+        });
+
+        it('uses the specified elmFolder', function () {
+          expect(elmCompiler.elm_config.elmFolder).to.equal('test\\elm\\folder');
+        });
+      });
     });
   });
 

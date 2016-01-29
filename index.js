@@ -21,9 +21,16 @@
       this.skipedOnInit = {}
     }
 
+    function escapeRegExp(str) {
+      return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+    }
+
     ElmCompiler.prototype.compile = function(data, inFile, callback) {
       var elmFolder = this.elm_config.elmFolder;
-      var file = inFile.replace(new RegExp('^' + elmFolder + '[' + path.sep + ']?'), '');
+      var file = inFile;
+      if (elmFolder) {
+        file = inFile.replace(new RegExp('^' + escapeRegExp(elmFolder) + '[/\\\\]?'), '');
+      }
       var modules = this.elm_config.mainModules || [file];
       var file_is_module_index = modules.indexOf(file);
       if (file_is_module_index >= 0) {
