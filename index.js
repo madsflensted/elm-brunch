@@ -44,9 +44,8 @@
       var outputFolder = this.elm_config.outputFolder;
 
       return modules.forEach(function(src) {
-        var moduleName;
-        moduleName = path.basename(src, '.elm').toLowerCase();
-        return elmCompile(src, elmFolder, path.join(outputFolder, moduleName + '.js'), callback);
+        var outputFileName = path.basename(src, '.elm').toLowerCase() + '.js';
+        return elmCompile(src, elmFolder, path.join(outputFolder, outputFileName), callback);
       });
     };
 
