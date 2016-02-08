@@ -39,7 +39,14 @@ YourMainModule.elm => outputFolder/yourmainmodule.elm
 ```
 
 # Examples
+
 The following repos are examples of elm-brunch configuration:
 - https://github.com/joedski/brunch-with-elm/blob/master/brunch-config.coffee
 - https://github.com/madsflensted/dots/blob/master/brunch-config.js
 - https://github.com/ivanoats/Bingo/blob/master/brunch-config.js
+
+# Running tests for this plugin
+```
+npm install
+npm test
+```
