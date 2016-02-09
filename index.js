@@ -23,25 +23,36 @@
       return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
     }
 
-    ElmCompiler.prototype.compile = function(data, inFile, callback) {
+    function buildModuleInfo(config, inFile) {
       var file = inFile;
-      var elmFolder = this.elm_config.elmFolder;
+      var elmFolder = config.elmFolder;
 
       if (elmFolder) {
         file = inFile.replace(new RegExp('^' + escapeRegExp(elmFolder) + '[/\\\\]?'), '');
       }
 
-      var modules = this.elm_config.mainModules || [file];
-      var file_is_module_index = modules.indexOf(file);
+      var modules = config.mainModules || [file];
+      var mainModuleIndex = modules.indexOf(file);
 
-      if (file_is_module_index >= 0) {
-        modules = [modules[file_is_module_index]];
-      } else if (!this.skipedOnInit[file]) {
-        this.skipedOnInit[file] = true;
+      if (mainModuleIndex >= 0) {
+        return { path: modules[mainModuleIndex], isMainModule: true };
+      }
+      else {
+        return { path: modules[0], isMainModule: false };
+      }
+    }
+
+    ElmCompiler.prototype.compile = function(data, inFile, callback) {
+      var moduleInfo = buildModuleInfo(this.elm_config, inFile);
+
+      if (!moduleInfo.isMainModule && !this.skipedOnInit[inFile]) {
+        this.skipedOnInit[inFile] = true;
         return callback(null, '');
       }
 
+      var modules = [ moduleInfo.path ];
       var outputFolder = this.elm_config.outputFolder;
+      var elmFolder = this.elm_config.elmFolder;
 
       return modules.forEach(function(src) {
         var outputFileName = path.basename(src, '.elm').toLowerCase() + '.js';
