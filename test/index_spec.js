@@ -156,11 +156,11 @@ describe('ElmCompiler', function (){
 
       it('shells out to the `elm make` command with a null cwd', function () {
         var content = '';
-        elmCompiler.compile(content, 'File.elm', function(error, data) {
+        elmCompiler.compile(content, 'Test.elm', function(error, data) {
           expect(error).to.not.be.ok;
           expect(data).to.equal('');
         });
-        elmCompiler.compile(content, 'File.elm', function(error) {
+        elmCompiler.compile(content, 'Test.elm', function(error) {
           expect(error).to.not.be.ok;
         });
         expected = 'elm make --yes --output test/output/folder/test.js Test.elm';
@@ -177,10 +177,10 @@ describe('ElmCompiler', function (){
 
       it('shells out to the `elm make` command with the specified elm folder as the cwd', function () {
         var content = '';
-        elmCompiler.compile(content, 'File.elm', function(error) {
+        elmCompiler.compile(content, 'Test.elm', function(error) {
           expect(error).to.not.be.ok;
         });
-        elmCompiler.compile(content, 'File.elm', function(error) {
+        elmCompiler.compile(content, 'Test.elm', function(error) {
           expect(error).to.not.be.ok;
         });
         expected = 'elm make --yes --output test/output/folder/test.js Test.elm';

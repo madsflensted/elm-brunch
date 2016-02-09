@@ -23,7 +23,7 @@
       return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
     }
 
-    function buildModuleInfo(config, inFile) {
+    function findModuleToCompile(config, inFile) {
       var file = inFile;
       var elmFolder = config.elmFolder;
 
@@ -34,30 +34,21 @@
       var modules = config.mainModules || [file];
       var mainModuleIndex = modules.indexOf(file);
 
-      if (mainModuleIndex >= 0) {
-        return { path: modules[mainModuleIndex], isMainModule: true };
-      }
-      else {
-        return { path: modules[0], isMainModule: false };
-      }
+      return modules[mainModuleIndex];
     }
 
     ElmCompiler.prototype.compile = function(data, inFile, callback) {
-      var moduleInfo = buildModuleInfo(this.elm_config, inFile);
+      var modulePath = findModuleToCompile(this.elm_config, inFile);
 
-      if (!moduleInfo.isMainModule && !this.skipedOnInit[inFile]) {
-        this.skipedOnInit[inFile] = true;
+      if (!modulePath) {
         return callback(null, '');
       }
 
-      var modules = [ moduleInfo.path ];
       var outputFolder = this.elm_config.outputFolder;
       var elmFolder = this.elm_config.elmFolder;
+      var outputFileName = path.basename(modulePath, '.elm').toLowerCase() + '.js';
 
-      return modules.forEach(function(src) {
-        var outputFileName = path.basename(src, '.elm').toLowerCase() + '.js';
-        return elmCompile(src, elmFolder, path.join(outputFolder, outputFileName), callback);
-      });
+      return elmCompile(modulePath, elmFolder, path.join(outputFolder, outputFileName), callback);
     };
 
     return ElmCompiler;
