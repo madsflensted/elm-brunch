@@ -34,21 +34,22 @@
       var modules = config.mainModules || [file];
       var mainModuleIndex = modules.indexOf(file);
 
-      return modules[mainModuleIndex];
+      return { mainModulePath: modules[mainModuleIndex], dependencyPaths: [] }
     }
 
     ElmCompiler.prototype.compile = function(data, inFile, callback) {
-      var modulePath = findModuleToCompile(this.elm_config, inFile);
+      var info = findModuleToCompile(this.elm_config, inFile);
 
-      if (!modulePath) {
+      if (!info.mainModulePath) {
         return callback(null, '');
       }
 
       var outputFolder = this.elm_config.outputFolder;
       var elmFolder = this.elm_config.elmFolder;
-      var outputFileName = path.basename(modulePath, '.elm').toLowerCase() + '.js';
+      var outputFileName = path.basename(info.mainModulePath, '.elm').toLowerCase() + '.js';
+      var elmSourceFiles = [ info.mainModulePath ].concat(info.dependencyPaths).join(" ")
 
-      return elmCompile(modulePath, elmFolder, path.join(outputFolder, outputFileName), callback);
+      return elmCompile(elmSourceFiles, elmFolder, path.join(outputFolder, outputFileName), callback);
     };
 
     return ElmCompiler;
