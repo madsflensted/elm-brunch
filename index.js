@@ -31,16 +31,47 @@
         file = inFile.replace(new RegExp('^' + escapeRegExp(elmFolder) + '[/\\\\]?'), '');
       }
 
-      var modules = config.mainModules || [file];
+      var dependencyPaths = [];
+      var modules = [];
+      var buildingDependency = false;
+
+      if(config.mainModules instanceof Array) {
+        modules = config.mainModules;
+      }
+      else if (config.mainModules) {
+        // If the current file is a dependency, find the mainModule it corresponds to
+        // so we can build that instead since you can't build dependencies in isolation.
+        for(mainModulePath in config.mainModules) {
+          if(config.mainModules[mainModulePath].indexOf(file) != -1) {
+            file = mainModulePath;
+            buildingDependency = true;
+            break;
+          }
+        }
+
+        dependencyPaths = config.mainModules[file] || [];
+        modules = Object.keys(config.mainModules);
+      }
+      else {
+        modules = [file];
+      }
+
       var mainModuleIndex = modules.indexOf(file);
 
-      return { mainModulePath: modules[mainModuleIndex], dependencyPaths: [] }
+      return { mainModulePath: modules[mainModuleIndex], dependencyPaths: dependencyPaths, buildingDependency: buildingDependency }
     }
 
     ElmCompiler.prototype.compile = function(data, inFile, callback) {
       var info = findModuleToCompile(this.elm_config, inFile);
 
       if (!info.mainModulePath) {
+        return callback(null, '');
+      }
+
+      // compile will be called for each file when brunch starts, we only want
+      // it to build the main file once, so we use this to skip building it for dependencies.
+      if (info.buildingDependency && !this.skipedOnInit[inFile]) {
+        this.skipedOnInit[inFile] = true;
         return callback(null, '');
       }
 

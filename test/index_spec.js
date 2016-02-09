@@ -195,7 +195,6 @@ describe('ElmCompiler', function (){
         expected = 'elm make --yes --output test/output/folder/test.js Test.elm';
         expect(childProcess.execSync).to.have.been.calledWith(expected, {cwd: 'test/elm/folder'});
       });
-
     });
 
     describe('the initial run', function () {
@@ -222,6 +221,41 @@ describe('ElmCompiler', function (){
           });
           expected = 'elm make --yes --output test/output/folder/test.js Test.elm';
           expect(childProcess.execSync).to.have.been.calledWith(expected, {cwd: null});
+        });
+
+        it('should compile dependencies together with main modules', function () {
+          sampleConfig.plugins.elmBrunch.mainModules = { 'Test.elm': [ "Dep1.elm", "Dep2.elm" ] };
+          config = JSON.parse(JSON.stringify(sampleConfig));
+          elmCompiler = new ElmCompiler(config);
+
+          var content = '';
+          elmCompiler.compile(content, 'Test.elm', function(error) {
+            expect(error).to.not.be.ok;
+          });
+
+          expected = 'elm make --yes --output test/output/folder/test.js Test.elm Dep1.elm Dep2.elm';
+          expect(childProcess.exec).to.have.been.calledWith(expected, {cwd: null});
+        });
+
+        it('should compile a main module when a dependency is given', function () {
+          sampleConfig.plugins.elmBrunch.mainModules = { 'Test.elm': [ "Dep1.elm", "Dep2.elm" ] };
+          config = JSON.parse(JSON.stringify(sampleConfig));
+          elmCompiler = new ElmCompiler(config);
+
+          var content = '';
+
+          // Skip compile the first time to not compile the main file once per
+          // dependent file when brunch starts
+          elmCompiler.compile(content, 'Dep2.elm', function(error) {
+            expect(error).to.not.be.ok;
+          });
+          expect(childProcess.exec).not.to.have.been.called
+
+          elmCompiler.compile(content, 'Dep2.elm', function(error) {
+            expect(error).to.not.be.ok;
+          });
+          expected = 'elm make --yes --output test/output/folder/test.js Test.elm Dep1.elm Dep2.elm';
+          expect(childProcess.exec).to.have.been.calledWith(expected, {cwd: null});
         });
       });
 
