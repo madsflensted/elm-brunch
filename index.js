@@ -37,8 +37,7 @@
 
       if(config.mainModules instanceof Array) {
         modules = config.mainModules;
-      }
-      else if (config.mainModules) {
+      } else if (config.mainModules) {
         // If the current file is a dependency, find the mainModule it corresponds to
         // so we can build that instead since you can't build dependencies in isolation.
         for(mainModulePath in config.mainModules) {
@@ -51,8 +50,7 @@
 
         dependencyPaths = config.mainModules[file] || [];
         modules = Object.keys(config.mainModules);
-      }
-      else {
+      } else {
         modules = [file];
       }
 
