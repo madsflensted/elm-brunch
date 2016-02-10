@@ -62,9 +62,14 @@
     info += ', to ' + outputFile;
     console.log(info);
 
-    childProcess.exec('elm make --yes --output ' + outputFile + ' ' + srcFile, {cwd: elmFolder}, function (error, stdout, stderr){
-      return callback(error, error ? stderr : '');
-    });
+    var command = 'elm make --yes --output ' + outputFile + ' ' + srcFile;
+
+    try {
+      childProcess.execSync(command, { cwd: elmFolder })
+      callback(null, "");
+    } catch (error) {
+      callback(error, "");
+    }
   };
 
 }).call(this);
