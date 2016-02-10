@@ -1,3 +1,6 @@
+## 0.4.4 
+  - Switch to sync compilation, thanks to @joakimk
+
 ## 0.4.3
   - Fix Regex handling of Windows paths
 

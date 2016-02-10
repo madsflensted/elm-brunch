@@ -1,6 +1,6 @@
 {
   "name": "elm-brunch",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "Brunch plugin to compile Elm code (http://elm-lang.org)",
   "main": "index.js",
   "scripts": {
