@@ -22,10 +22,17 @@ Then configure elm-brunch:
         // Set to path where elm-package.json is located, defaults to project root (optional)
         // if your elm files are not in /app then make sure to configure paths.watched in main brunch config
         elmFolder: 'path/to/elm-files',
+
         // Set to the elm file(s) containing your "main" function
         // `elm make` handles all elm dependencies (required)
         // relative to `elmFolder`
         mainModules: ['source/path/YourMainModule.elm'],
+
+        // Alternatively you can specify main modules and dependencies
+        mainModules: {
+          'source/path/YourMainModule.elm': [ 'source/path/Dependency.elm' ]
+        },
+
         // Defaults to 'js/' folder in paths.public (optional)
         outputFolder: 'some/path/'
       }
@@ -39,7 +46,14 @@ YourMainModule.elm => outputFolder/yourmainmodule.elm
 ```
 
 # Examples
+
 The following repos are examples of elm-brunch configuration:
 - https://github.com/joedski/brunch-with-elm/blob/master/brunch-config.coffee
 - https://github.com/madsflensted/dots/blob/master/brunch-config.js
 - https://github.com/ivanoats/Bingo/blob/master/brunch-config.js
+
+# Running tests for this plugin
+```
+npm install
+npm test
+```
