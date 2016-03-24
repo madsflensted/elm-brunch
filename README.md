@@ -2,7 +2,7 @@
 [Brunch](http://brunch.io) plugin to compile Elm code
 
 # Install Elm
-[Elm instalation instructions](http://elm-lang.org/Install.elm)
+[Elm installation instructions](http://elm-lang.org/Install.elm)
 
 # Install elm-brunch
 ```
