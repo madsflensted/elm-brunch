@@ -1,3 +1,6 @@
+## 0.5.0
+  - Enable seting of additional make parameters. Thanks to @ilkosta
+
 ## 0.4.4 
   - Switch to sync compilation, thanks to @joakimk
 
