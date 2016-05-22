@@ -144,7 +144,7 @@ describe('ElmCompiler', function (){
       });
 
       describe('when some makeParameters are specified', function () {
-        let makeParameters = ['--warn'];
+        var makeParameters = ['--warn'];
         beforeEach(function () {
           config = JSON.parse(JSON.stringify(baseConfig));
           config.plugins.elmBrunch.makeParameters = makeParameters;
