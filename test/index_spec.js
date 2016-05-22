@@ -130,7 +130,35 @@ describe('ElmCompiler', function (){
         });
       });
     });
+
+
+    describe('makeParameters', function () {
+      describe('when no makeParameters are not specified', function () {
+        beforeEach(function () {
+          elmCompiler = new ElmCompiler(baseConfig);
+        });
+
+        it('defaults to an empty list', function () {
+          expect(elmCompiler.elm_config.makeParameters).to.be.empty;
+        });
+      });
+
+      describe('when some makeParameters are specified', function () {
+        let makeParameters = ['--warn'];
+        beforeEach(function () {
+          config = JSON.parse(JSON.stringify(baseConfig));
+          config.plugins.elmBrunch.makeParameters = makeParameters;
+          elmCompiler = new ElmCompiler(config);
+        });
+
+        it('uses the specified makeParameters', function () {
+          expect(elmCompiler.elm_config.makeParameters).to.equal(makeParameters);
+        });
+      });
+    });
   });
+
+
 
   describe('compiling Elm', function () {
     var childProcess = require('child_process')
