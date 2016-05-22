@@ -22,12 +22,17 @@ Then configure elm-brunch:
         // Set to path where elm-package.json is located, defaults to project root (optional)
         // if your elm files are not in /app then make sure to configure paths.watched in main brunch config
         elmFolder: 'path/to/elm-files',
+        
         // Set to the elm file(s) containing your "main" function
         // `elm make` handles all elm dependencies (required)
         // relative to `elmFolder`
         mainModules: ['source/path/YourMainModule.elm'],
+        
         // Defaults to 'js/' folder in paths.public (optional)
-        outputFolder: 'some/path/'
+        outputFolder: 'some/path/',
+        
+        // optional: add some parameters that are passed to elm-make
+        makeParameters : ['--warn']
       }
    }
 
@@ -35,7 +40,7 @@ Then configure elm-brunch:
 
 The output filename is the lowercase version of the main module name:
 ```
-YourMainModule.elm => outputFolder/yourmainmodule.elm
+YourMainModule.elm => outputFolder/yourmainmodule.js
 ```
 
 # Examples
