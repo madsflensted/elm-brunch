@@ -15,6 +15,7 @@
     function ElmCompiler(config) {
       var elm_config = {};
       elm_config.outputFolder = (config.plugins.elmBrunch || {}).outputFolder || path.join(config.paths.public, 'js');
+      elm_config.outputFile = (config.plugins.elmBrunch || {}).outputFile || null;
       elm_config.mainModules = (config.plugins.elmBrunch || {}).mainModules;
       elm_config.elmFolder = (config.plugins.elmBrunch || {}).elmFolder || null;
       elm_config.makeParameters = (config.plugins.elmBrunch || {}).makeParameters || [];
@@ -33,9 +34,10 @@
         file = inFile.replace(new RegExp('^' + escapeRegExp(elmFolder) + '[/\\\\]?'), '');
       }
       var modules = this.elm_config.mainModules || [file];
+      var compileModules = modules;
       var file_is_module_index = modules.indexOf(file);
       if (file_is_module_index >= 0) {
-        modules = [modules[file_is_module_index]];
+        compileModules = [modules[file_is_module_index]];
       } else {
         if (this.skipedOnInit[file]){
         } else {
@@ -44,15 +46,23 @@
         }
       }
       var outputFolder = this.elm_config.outputFolder;
+      var outputFile = this.elm_config.outputFile;
       const makeParameters = this.elm_config.makeParameters;
-      return modules.forEach(function(src) {
-        var moduleName;
-        moduleName = path.basename(src, '.elm').toLowerCase();
-        return elmCompile ( src, elmFolder
-                          , path.join(outputFolder, moduleName + '.js')
+      if (outputFile === null) {
+        return compileModules.forEach(function(src) {
+          var moduleName;
+          moduleName = path.basename(src, '.elm').toLowerCase();
+          return elmCompile ( src, elmFolder
+                            , path.join(outputFolder, moduleName + '.js')
+                            , makeParameters
+                            , callback );
+        });
+      } else {
+        return elmCompile ( modules, elmFolder
+                          , path.join(outputFolder, outputFile)
                           , makeParameters
                           , callback );
-      });
+      }
     };
 
     return ElmCompiler;
@@ -60,6 +70,9 @@
   })();
 
   elmCompile = function(srcFile, elmFolder, outputFile, makeParameters, callback) {
+    if (Array.isArray(srcFile)) {
+      srcFile = srcFile.join(' ');
+    }
     var info = 'Elm compile: ' + srcFile;
     if (elmFolder) {
       info += ', in ' + elmFolder;

@@ -269,6 +269,24 @@ describe('ElmCompiler', function (){
           expect(childProcess.execSync).to.have.been.calledWith(expected, {cwd: null});
         });
       });
+
+      describe('when more than one mainModule is specified', function () {
+        beforeEach(function () {
+          config = JSON.parse(JSON.stringify(baseConfig));
+          config.plugins.elmBrunch.outputFolder = 'test/output/folder';
+          config.plugins.elmBrunch.mainModules = ['Test1.elm', 'Test2.elm'];
+          config.plugins.elmBrunch.outputFile = 'test.js';
+          elmCompiler = new ElmCompiler(config);
+        });
+        it('should compile all modules into a single file', function () {
+          var content = '';
+          elmCompiler.compile(content, 'Test1.elm', function(error) {
+            expect(error).to.not.be.ok;
+          });
+          expected = 'elm make --yes --output test/output/folder/test.js Test1.elm Test2.elm';
+          expect(childProcess.execSync).to.have.been.calledWith(expected, {cwd: null});
+        });
+      });
     });
   });
 });
