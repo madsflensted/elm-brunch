@@ -1,3 +1,6 @@
+## 0.6.0
+  - Add setting to compile all main modules to single js file. Thanks to @igray
+
 ## 0.5.0
   - Enable seting of additional make parameters. Thanks to @ilkosta
 
