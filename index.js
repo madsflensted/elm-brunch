@@ -14,6 +14,7 @@
 
     function ElmCompiler(config) {
       var elm_config = {};
+      elm_config.executablePath = (config.plugins.elmBrunch || {}).executablePath || "";
       elm_config.outputFolder = (config.plugins.elmBrunch || {}).outputFolder || path.join(config.paths.public, 'js');
       elm_config.outputFile = (config.plugins.elmBrunch || {}).outputFile || null;
       elm_config.mainModules = (config.plugins.elmBrunch || {}).mainModules;
@@ -45,6 +46,7 @@
           return callback(null, '');
         }
       }
+      var executablePath = this.elm_config.executablePath;
       var outputFolder = this.elm_config.outputFolder;
       var outputFile = this.elm_config.outputFile;
       const makeParameters = this.elm_config.makeParameters;
@@ -52,13 +54,17 @@
         return compileModules.forEach(function(src) {
           var moduleName;
           moduleName = path.basename(src, '.elm').toLowerCase();
-          return elmCompile ( src, elmFolder
+          return elmCompile ( executablePath
+                            , src
+                            , elmFolder
                             , path.join(outputFolder, moduleName + '.js')
                             , makeParameters
                             , callback );
         });
       } else {
-        return elmCompile ( modules, elmFolder
+        return elmCompile ( executablePath
+                          , modules
+                          , elmFolder
                           , path.join(outputFolder, outputFile)
                           , makeParameters
                           , callback );
@@ -69,7 +75,7 @@
 
   })();
 
-  elmCompile = function(srcFile, elmFolder, outputFile, makeParameters, callback) {
+  elmCompile = function(executablePath, srcFile, elmFolder, outputFile, makeParameters, callback) {
     if (Array.isArray(srcFile)) {
       srcFile = srcFile.join(' ');
     }
@@ -84,7 +90,8 @@
                   .concat(makeParameters) // other options from brunch-config.js
                   .concat(['--output', outputFile , srcFile ]);
 
-    var command = 'elm make ' + params.join(' ');
+    var executable = path.join(executablePath, 'elm make');
+    var command = executable + params.join(' ');
 
 
     try {
