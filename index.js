@@ -90,8 +90,8 @@
                   .concat(makeParameters) // other options from brunch-config.js
                   .concat(['--output', outputFile , srcFile ]);
 
-    var executable = path.join(executablePath, 'elm make ');
-    var command = executable + params.join(' ');
+    var executable = path.join(executablePath, 'elm-make');
+    var command = executable + ' ' + params.join(' ');
 
 
     try {
