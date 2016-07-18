@@ -1,3 +1,6 @@
+## 0.7.0
+  - Add setting to specify path to elm executable. Thanks to @fbonetti
+
 ## 0.6.0
   - Add setting to compile all main modules to single js file. Thanks to @igray
 
