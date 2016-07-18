@@ -19,9 +19,6 @@ Then configure elm-brunch:
       ...
 
       elmBrunch: {
-        // Set to path where `elm-make` is located, relative to `elmFolder` (optional)
-        executablePath: '../../node_modules/elm/binwrappers',
-
         // Set to path where elm-package.json is located, defaults to project root (optional)
         // if your elm files are not in /app then make sure to configure paths.watched in main brunch config
         elmFolder: 'path/to/elm-files',
