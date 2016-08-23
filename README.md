@@ -37,6 +37,9 @@ Then configure elm-brunch:
         // If specified, all mainModules will be compiled to a single file (optional and merged with outputFolder)
         outputFile: 'elm.js',
 
+        // In case of compilation errors resulting js will contain error messages (default is false)
+        consoleErrors: true,
+
         // optional: add some parameters that are passed to elm-make
         makeParameters : ['--warn']
       }
