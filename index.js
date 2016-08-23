@@ -17,6 +17,7 @@
       elm_config.executablePath = (config.plugins.elmBrunch || {}).executablePath || "";
       elm_config.outputFolder = (config.plugins.elmBrunch || {}).outputFolder || path.join(config.paths.public, 'js');
       elm_config.outputFile = (config.plugins.elmBrunch || {}).outputFile || null;
+      elm_config.consoleErrors = (config.plugins.elmBrunch || {}).consoleErrors || false;
       elm_config.mainModules = (config.plugins.elmBrunch || {}).mainModules;
       elm_config.elmFolder = (config.plugins.elmBrunch || {}).elmFolder || null;
       elm_config.makeParameters = (config.plugins.elmBrunch || {}).makeParameters || [];
@@ -49,6 +50,7 @@
       var executablePath = this.elm_config.executablePath;
       var outputFolder = this.elm_config.outputFolder;
       var outputFile = this.elm_config.outputFile;
+      var consoleErrors = this.elm_config.consoleErrors;
       const makeParameters = this.elm_config.makeParameters;
       if (outputFile === null) {
         return compileModules.forEach(function(src) {
@@ -58,6 +60,7 @@
                             , src
                             , elmFolder
                             , path.join(outputFolder, moduleName + '.js')
+                            , consoleErrors
                             , makeParameters
                             , callback );
         });
@@ -66,6 +69,7 @@
                           , modules
                           , elmFolder
                           , path.join(outputFolder, outputFile)
+                          , consoleErrors
                           , makeParameters
                           , callback );
       }
@@ -75,11 +79,12 @@
 
   })();
 
-  elmCompile = function(executablePath, srcFile, elmFolder, outputFile, makeParameters, callback) {
+  elmCompile = function(executablePath, srcFile, elmFolder, outputFile, consoleErrors, makeParameters, callback) {
     if (Array.isArray(srcFile)) {
       srcFile = srcFile.join(' ');
     }
     var info = 'Elm compile: ' + srcFile;
+
     if (elmFolder) {
       info += ', in ' + elmFolder;
     }
@@ -93,10 +98,24 @@
     var executable = path.join(executablePath, 'elm-make');
     var command = executable + ' ' + params.join(' ');
 
-
     try {
-      childProcess.execSync(command, { cwd: elmFolder });
-      callback(null, "");
+
+      if (consoleErrors == true) {
+        var child = childProcess.spawnSync(executable, params, { cwd: elmFolder });
+        var errors = child.stderr.toString();
+        if (child.status != 0) {
+          // Generate JS file with console.error in place of the original output
+          formattedErrors = errors.replace(/"/g, '\\"').split('\n').join('\\n')
+          require('fs').writeFile(path.join(elmFolder, outputFile), 'console.error("' + formattedErrors + '")');
+          callback(errors, "")
+        } else {
+          callback(null, "")
+        }
+      } else {
+        childProcess.execSync(command, { cwd: elmFolder });
+        callback(null, "");
+      }
+
     } catch (error) {
       callback(error, "");
     }
