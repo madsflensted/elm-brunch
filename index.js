@@ -13,15 +13,10 @@
     ElmCompiler.prototype.extension = 'elm';
 
     function ElmCompiler(config) {
-      var elm_config = {};
-      elm_config.executablePath = (config.plugins.elmBrunch || {}).executablePath || "";
-      elm_config.outputFolder = (config.plugins.elmBrunch || {}).outputFolder || path.join(config.paths.public, 'js');
-      elm_config.outputFile = (config.plugins.elmBrunch || {}).outputFile || null;
-      elm_config.mainModules = (config.plugins.elmBrunch || {}).mainModules;
-      elm_config.elmFolder = (config.plugins.elmBrunch || {}).elmFolder || null;
-      elm_config.makeParameters = (config.plugins.elmBrunch || {}).makeParameters || [];
-      this.elm_config = elm_config;
+      const defaults = {executablePath: "", outputFolder: path.join(config.paths.public, 'js'), outputFile: null, elmFolder: null, makeParameters: []};
+      this.elm_config = Object.assign({}, defaults, config.plugins.elmBrunch);
       this.skipedOnInit = {};
+      this.compiledOnCurrentStep = {};
     }
 
     function escapeRegExp(str) {
@@ -29,77 +24,84 @@
     }
 
     ElmCompiler.prototype.compile = function(data, inFile, callback) {
-      var elmFolder = this.elm_config.elmFolder;
-      var file = inFile;
-      if (elmFolder) {
-        file = inFile.replace(new RegExp('^' + escapeRegExp(elmFolder) + '[/\\\\]?'), '');
-      }
-      var modules = this.elm_config.mainModules || [file];
-      var compileModules = modules;
-      var file_is_module_index = modules.indexOf(file);
-      if (file_is_module_index >= 0) {
-        compileModules = [modules[file_is_module_index]];
-      } else {
-        if (this.skipedOnInit[file]){
-        } else {
-          this.skipedOnInit[file] = true;
-          return callback(null, '');
-        }
-      }
-      var executablePath = this.elm_config.executablePath;
-      var outputFolder = this.elm_config.outputFolder;
-      var outputFile = this.elm_config.outputFile;
+      this.compiledOnCurrentStep = {};
+      return callback(null, '');
+    };
+
+    ElmCompiler.prototype.onCompile = function(files, assets) {
+      if(!Array.isArray(files)) files = [files];
+      const _this = this;
+
+      files.forEach(function(item) {
+        item.sourceFiles.forEach(function(file) {
+          if(/\.elm$/i.test(file.path)){
+            var filePath = file.path;
+
+            const elmFolder = _this.elm_config.elmFolder;
+            if (elmFolder) {
+              filePath = filePath.replace(new RegExp('^' + escapeRegExp(elmFolder) + '[/\\\\]?'), '');
+            }
+
+            const modules = _this.elm_config.mainModules || [filePath];
+            const file_is_module_index = modules.indexOf(filePath);
+
+            var compileModules = modules;
+
+            if (file_is_module_index >= 0) {
+              compileModules = [modules[file_is_module_index]];
+            } else {
+              if (!_this.skipedOnInit[filePath]){
+                _this.skipedOnInit[filePath] = true;
+                return;
+              }
+            }
+
+            const outputFolder = _this.elm_config.outputFolder;
+            const outputFile   = _this.elm_config.outputFile;
+
+            if (outputFile === null) {
+              return compileModules.forEach(function(src) {
+                if(_this.compiledOnCurrentStep[src]) return;
+
+                const moduleName = path.basename(src, '.elm').toLowerCase();
+                return _this.elmCompile(src, path.join(outputFolder, moduleName + '.js'));
+              });
+            } else {
+              if(_this.compiledOnCurrentStep[modules]) return;
+
+              return _this.elmCompile(modules, path.join(outputFolder, outputFile));
+            }
+          }
+        })
+      })
+    };
+
+    ElmCompiler.prototype.elmCompile = function(srcFile, outputFile) {
+      const elmFolder      = this.elm_config.elmFolder;
+      const executablePath = this.elm_config.executablePath;
       const makeParameters = this.elm_config.makeParameters;
-      if (outputFile === null) {
-        return compileModules.forEach(function(src) {
-          var moduleName;
-          moduleName = path.basename(src, '.elm').toLowerCase();
-          return elmCompile ( executablePath
-                            , src
-                            , elmFolder
-                            , path.join(outputFolder, moduleName + '.js')
-                            , makeParameters
-                            , callback );
-        });
-      } else {
-        return elmCompile ( executablePath
-                          , modules
-                          , elmFolder
-                          , path.join(outputFolder, outputFile)
-                          , makeParameters
-                          , callback );
-      }
+
+      const originSrcFile = srcFile;
+      if (Array.isArray(srcFile)) srcFile = srcFile.join(' ');
+
+      var info = 'Elm compile: ' + srcFile;
+      if (elmFolder) info += ', in ' + elmFolder;
+      info += ', to ' + outputFile;
+      console.log(info);
+
+
+      const params = ['--yes']  //  Reply 'yes' to all automated prompts
+                    .concat(makeParameters) // other options from brunch-config.js
+                    .concat(['--output', outputFile , srcFile ]);
+
+      const executable = path.join(executablePath, 'elm-make');
+      const command = executable + ' ' + params.join(' ');
+
+
+      childProcess.execSync(command, { cwd: elmFolder });
+      this.compiledOnCurrentStep[originSrcFile] = true;
     };
 
     return ElmCompiler;
-
   })();
-
-  elmCompile = function(executablePath, srcFile, elmFolder, outputFile, makeParameters, callback) {
-    if (Array.isArray(srcFile)) {
-      srcFile = srcFile.join(' ');
-    }
-    var info = 'Elm compile: ' + srcFile;
-    if (elmFolder) {
-      info += ', in ' + elmFolder;
-    }
-    info += ', to ' + outputFile;
-    console.log(info);
-
-    const params = ['--yes']  //  Reply 'yes' to all automated prompts
-                  .concat(makeParameters) // other options from brunch-config.js
-                  .concat(['--output', outputFile , srcFile ]);
-
-    var executable = path.join(executablePath, 'elm-make');
-    var command = executable + ' ' + params.join(' ');
-
-
-    try {
-      childProcess.execSync(command, { cwd: elmFolder });
-      callback(null, "");
-    } catch (error) {
-      callback(error, "");
-    }
-  };
-
 }).call(this);
