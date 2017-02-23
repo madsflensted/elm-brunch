@@ -38,7 +38,7 @@ Then configure elm-brunch:
         outputFile: 'elm.js',
 
         // optional: add some parameters that are passed to elm-make
-        makeParameters : ['--warn']
+        makeParameters: ['--warn']
       }
    }
 
