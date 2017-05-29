@@ -43,6 +43,7 @@ paths: {
         elmFolder: 'path/to/elm-files',
 
         // (optional) Defaults to 'js/' folder in paths.public
+        // relative to `elmFolder`
         outputFolder: 'some/path/',
 
         // (optional) If specified, all mainModules will be compiled to a single file 
