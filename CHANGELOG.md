@@ -1,3 +1,11 @@
+## 0.9.0
+  - Catch exception from compile errors. Thanks to @env0der
+  - Doc updates. Thanks to @kevgathuku
+
+## 0.8.0
+  - Switch to brunch onCompile hook. Thanks to @stelmakh
+  - Doc updates. Thanks to @ronanyeah
+
 ## 0.7.0
   - Add setting to specify path to elm executable. Thanks to @fbonetti
 
