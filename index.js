@@ -98,7 +98,12 @@
       const command = executable + ' ' + params.join(' ');
 
 
-      childProcess.execSync(command, { cwd: elmFolder });
+      try {
+        childProcess.execSync(command, { cwd: elmFolder });
+      } catch (error) {
+        // we don't want Elm compilation error to crash the whole Brunch process
+      }
+
       this.compiledOnCurrentStep[originSrcFile] = true;
     };
 
