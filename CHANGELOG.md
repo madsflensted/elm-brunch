@@ -1,3 +1,6 @@
+## 0.10.0
+  - Revert PR 30, base on #35 and #38
+
 ## 0.9.0
   - Catch exception from compile errors. Thanks to @env0der
   - Doc updates. Thanks to @kevgathuku
