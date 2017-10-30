@@ -30,10 +30,6 @@ describe('ElmCompiler', function (){
     it('has a #compile method', function () {
       expect(elmCompiler.compile).to.be.an.instanceof(Function);
     });
-
-    it('has a #onCompile method', function () {
-      expect(elmCompiler.onCompile).to.be.an.instanceof(Function);
-    });
   });
 
   describe('elm config', function () {
@@ -188,10 +184,13 @@ describe('ElmCompiler', function (){
 
       it('shells out to the `elm-make` command with a null cwd', function () {
         var content = '';
-        elmCompiler.compile(null, null, function(){});
-        elmCompiler.onCompile({sourceFiles: [{path: 'File.elm'}]}, []);
-        elmCompiler.compile(null, null, function(){});
-        elmCompiler.onCompile({sourceFiles: [{path: 'File.elm'}]}, []);
+        elmCompiler.compile(content, 'File.elm', function(error, data) {
+          expect(error).to.not.be.ok;
+          expect(data).to.equal('');
+        });
+        elmCompiler.compile(content, 'File.elm', function(error) {
+          expect(error).to.not.be.ok;
+        });
         expected = 'elm-make --yes --output test/output/folder/test.js Test.elm';
         expect(childProcess.execSync).to.have.been.calledWith(expected, {cwd: null});
       });
@@ -206,18 +205,21 @@ describe('ElmCompiler', function (){
 
       it('shells out to the `elm-make` command with the specified elm folder as the cwd', function () {
         var content = '';
-        elmCompiler.compile(null, null, function(){});
-        elmCompiler.onCompile({sourceFiles: [{path: 'File.elm'}]}, []);
-        elmCompiler.compile(null, null, function(){});
-        elmCompiler.onCompile({sourceFiles: [{path: 'File.elm'}]}, []);
+        elmCompiler.compile(content, 'File.elm', function(error) {
+          expect(error).to.not.be.ok;
+        });
+        elmCompiler.compile(content, 'File.elm', function(error) {
+          expect(error).to.not.be.ok;
+        });
         expected = 'elm-make --yes --output test/output/folder/test.js Test.elm';
         expect(childProcess.execSync).to.have.been.calledWith(expected, {cwd: 'test/elm/folder'});
       });
 
       it('normalises the brunch file path to the elmFolder path', function () {
         var content = '';
-        elmCompiler.compile(null, null, function(){});
-        elmCompiler.onCompile({sourceFiles: [{path: 'test/elm/folder/Test.elm'}]}, []);
+        elmCompiler.compile(content, 'test/elm/folder/Test.elm', function(error) {
+          expect(error).to.not.be.ok;
+        });
         expected = 'elm-make --yes --output test/output/folder/test.js Test.elm';
         expect(childProcess.execSync).to.have.been.calledWith(expected, {cwd: 'test/elm/folder'});
       });
@@ -233,16 +235,19 @@ describe('ElmCompiler', function (){
 
         it('should skip non main modules', function () {
           var content = '';
-          elmCompiler.compile(null, null, function(){});
-          elmCompiler.onCompile({sourceFiles: [{path: 'File.elm'}]}, []);
+          elmCompiler.compile(content, 'File.elm', function(error, data) {
+            expect(error).to.not.be.ok;
+            expect(data).to.equal('');
+          });
           expected = '';
           expect(childProcess.execSync).to.not.have.been.called;
         });
 
         it('should compile main modules', function () {
           var content = '';
-          elmCompiler.compile(null, null, function(){});
-          elmCompiler.onCompile({sourceFiles: [{path: 'Test.elm'}]}, []);
+          elmCompiler.compile(content, 'Test.elm', function(error) {
+            expect(error).to.not.be.ok;
+          });
           expected = 'elm-make --yes --output test/output/folder/test.js Test.elm';
           expect(childProcess.execSync).to.have.been.calledWith(expected, {cwd: null});
         });
@@ -257,8 +262,9 @@ describe('ElmCompiler', function (){
 
         it('should compile all modules', function () {
           var content = '';
-          elmCompiler.compile(null, null, function(){});
-          elmCompiler.onCompile({sourceFiles: [{path: 'Test.elm'}]}, []);
+          elmCompiler.compile(content, 'Test.elm', function(error) {
+            expect(error).to.not.be.ok;
+          });
           expected = 'elm-make --yes --output test/output/folder/test.js Test.elm';
           expect(childProcess.execSync).to.have.been.calledWith(expected, {cwd: null});
         });
@@ -274,8 +280,9 @@ describe('ElmCompiler', function (){
         });
         it('should compile all modules into a single file', function () {
           var content = '';
-          elmCompiler.compile(null, null, function(){});
-          elmCompiler.onCompile({sourceFiles: [{path: 'Test1.elm'}]}, []);
+          elmCompiler.compile(content, 'Test1.elm', function(error) {
+            expect(error).to.not.be.ok;
+          });
           expected = 'elm-make --yes --output test/output/folder/test.js Test1.elm Test2.elm';
           expect(childProcess.execSync).to.have.been.calledWith(expected, {cwd: null});
         });
