@@ -2,6 +2,8 @@
 
 [Brunch](http://brunch.io) plugin to compile Elm code
 
+[![Build Status](https://travis-ci.org/madsflensted/elm-brunch.svg?branch=master)](https://travis-ci.org/madsflensted/elm-brunch)
+
 
 ## Quickstart
 
