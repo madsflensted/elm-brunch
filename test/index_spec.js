@@ -94,6 +94,20 @@ describe('ElmCompiler', function (){
           expect(elmCompiler.elm_config.mainModules).to.include('Test2.elm');
         });
       });
+
+      describe('when more than one mainModule is specified, independantModules is true, and each mainModule contains the relative widget path', function () {
+        beforeEach(function () {
+          config = JSON.parse(JSON.stringify(baseConfig));
+          config.plugins.elmBrunch.mainModules = ['widget1/Test1.elm', 'widget2/Test2.elm']
+          elmCompiler = new ElmCompiler(config);
+        });
+
+        it('provides the specified mainModule with widget folder', function () {
+          expect(elmCompiler.elm_config.mainModules.length).to.equal(2);
+          expect(elmCompiler.elm_config.mainModules).to.include('widget1/Test1.elm');
+          expect(elmCompiler.elm_config.mainModules).to.include('widget2/Test2.elm');
+        });
+      });
     });
 
     describe('elmFolder', function () {

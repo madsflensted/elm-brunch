@@ -18,6 +18,7 @@
       elm_config.outputFolder = (config.plugins.elmBrunch || {}).outputFolder || path.join(config.paths.public, 'js');
       elm_config.outputFile = (config.plugins.elmBrunch || {}).outputFile || null;
       elm_config.mainModules = (config.plugins.elmBrunch || {}).mainModules;
+      elm_config.independantModules = (config.plugins.elmBrunch || {}).independantModules || null;
       elm_config.elmFolder = (config.plugins.elmBrunch || {}).elmFolder || null;
       elm_config.makeParameters = (config.plugins.elmBrunch || {}).makeParameters || [];
       this.elm_config = elm_config;
@@ -48,14 +49,26 @@
       }
       var executablePath = this.elm_config.executablePath;
       var outputFolder = this.elm_config.outputFolder;
+      var independantModules = this.elm_config.independantModules;
       var outputFile = this.elm_config.outputFile;
       const makeParameters = this.elm_config.makeParameters;
       if (outputFile === null) {
         return compileModules.forEach(function(src) {
           var moduleName;
           moduleName = path.basename(src, '.elm').toLowerCase();
+          if(independantModules){
+            var src_path_length = src.split("/").length;
+            if(src_path_length > 1){
+                moduleName = path.dirname(src).replace('/','_') + '_' + moduleName;
+                outputFolder = "../".repeat(src_path_length - 1) + outputFolder;
+                if(elmFolder == null)
+                    elmFolder = path.dirname(src);
+                else
+                    elmFolder = elmFolder + "/" + path.dirname(src);
+            }
+          }
           return elmCompile ( executablePath
-                            , src
+                            , path.basename(src)
                             , elmFolder
                             , path.join(outputFolder, moduleName + '.js')
                             , makeParameters
