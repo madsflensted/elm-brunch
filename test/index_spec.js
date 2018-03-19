@@ -95,7 +95,7 @@ describe('ElmCompiler', function (){
         });
       });
 
-      describe('when more than one mainModule is specified, independantModules is true, and each mainModule contains the relative widget path', function () {
+      describe('when more than one mainModule is specified, independentModules is true, and each mainModule contains the relative widget path', function () {
         beforeEach(function () {
           config = JSON.parse(JSON.stringify(baseConfig));
           config.plugins.elmBrunch.mainModules = ['widget1/Test1.elm', 'widget2/Test2.elm']

@@ -36,11 +36,11 @@ paths: {
         //            handles all elm dependencies relative to `elmFolder`
         mainModules: ['source/path/YourMainModule.elm'],
 
-        // (optional) Set to keep an independant elm-stuff folder per mainModule. If 
+        // (optional) Set to keep an independent elm-stuff folder per mainModule. If 
         //            mainModules is an array, then the 'source/path' of each mainModule 
         //            will be appended to your elm-folder, allowing each subfolder to keep their
         //            own set of elm dependencies.
-        independantModules: true,
+        independentModules: true,
 
         // (optional) Set to path where `elm-make` is located, relative to `elmFolder`
         executablePath: '../../node_modules/elm/binwrappers',
