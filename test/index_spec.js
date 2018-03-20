@@ -98,7 +98,8 @@ describe('ElmCompiler', function (){
       describe('when more than one mainModule is specified, independentModules is true, and each mainModule contains the relative widget path', function () {
         beforeEach(function () {
           config = JSON.parse(JSON.stringify(baseConfig));
-          config.plugins.elmBrunch.mainModules = ['widget1/Test1.elm', 'widget2/Test2.elm']
+          config.plugins.elmBrunch.mainModules = ['widget1/Test1.elm', 'widget2/Test2.elm'];
+          config.plugins.elmBrunch.independentModules = true;
           elmCompiler = new ElmCompiler(config);
         });
 
@@ -106,6 +107,8 @@ describe('ElmCompiler', function (){
           expect(elmCompiler.elm_config.mainModules.length).to.equal(2);
           expect(elmCompiler.elm_config.mainModules).to.include('widget1/Test1.elm');
           expect(elmCompiler.elm_config.mainModules).to.include('widget2/Test2.elm');
+          expect(elmCompiler.elm_config.independentModules).to.equal(true);
+
         });
       });
     });
