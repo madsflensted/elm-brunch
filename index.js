@@ -57,14 +57,14 @@
           var moduleName;
           moduleName = path.basename(src, '.elm').toLowerCase();
           if(independentModules){
-            var src_path_length = src.split("/").length;
+            var src_path_length = src.split(path.sep).length;
             if(src_path_length > 1){
-                moduleName = path.dirname(src).replace('/','_') + '_' + moduleName;
-                outputFolder = "../".repeat(src_path_length - 1) + outputFolder;
+                moduleName = path.dirname(src).replace(path.sep,'_') + '_' + moduleName;
+                outputFolder = ('..' + path.sep).repeat(src_path_length - 1) + outputFolder;
                 if(elmFolder == null)
                     elmFolder = path.dirname(src);
                 else
-                    elmFolder = elmFolder + "/" + path.dirname(src);
+                    elmFolder = elmFolder + path.sep + path.dirname(src);
             }
           }
           return elmCompile ( executablePath
