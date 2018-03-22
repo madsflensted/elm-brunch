@@ -1,3 +1,6 @@
+## 0.11.0
+  - Allow for independent elm-stuff per Main module. Thanks to @neildaemond
+
 ## 0.10.0
   - Revert PR 30, base on #35 and #38
 
