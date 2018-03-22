@@ -94,6 +94,23 @@ describe('ElmCompiler', function (){
           expect(elmCompiler.elm_config.mainModules).to.include('Test2.elm');
         });
       });
+
+      describe('when more than one mainModule is specified, independentModules is true, and each mainModule contains the relative widget path', function () {
+        beforeEach(function () {
+          config = JSON.parse(JSON.stringify(baseConfig));
+          config.plugins.elmBrunch.mainModules = ['widget1/Test1.elm', 'widget2/Test2.elm'];
+          config.plugins.elmBrunch.independentModules = true;
+          elmCompiler = new ElmCompiler(config);
+        });
+
+        it('provides the specified mainModule with widget folder', function () {
+          expect(elmCompiler.elm_config.mainModules.length).to.equal(2);
+          expect(elmCompiler.elm_config.mainModules).to.include('widget1/Test1.elm');
+          expect(elmCompiler.elm_config.mainModules).to.include('widget2/Test2.elm');
+          expect(elmCompiler.elm_config.independentModules).to.equal(true);
+
+        });
+      });
     });
 
     describe('elmFolder', function () {
@@ -285,6 +302,58 @@ describe('ElmCompiler', function (){
           });
           expected = 'elm-make --yes --output test/output/folder/test.js Test1.elm Test2.elm';
           expect(childProcess.execSync).to.have.been.calledWith(expected, {cwd: null});
+        });
+      });
+      describe('when independentModules is true, and elmFolder exists', function () {
+        beforeEach(function () {
+          config = JSON.parse(JSON.stringify(baseConfig));
+          config.plugins.elmBrunch.elmFolder = 'elm';
+          config.plugins.elmBrunch.outputFolder = 'test/output/folder';
+          config.plugins.elmBrunch.mainModules = ['widget1/Test1.elm'];
+          config.plugins.elmBrunch.independentModules = true;
+          elmCompiler = new ElmCompiler(config);
+        });
+        it('shells out to the `elm-make` command with the mainModule path as the cwd, and output folder to a level higher', function () {
+          var content = '';
+          elmCompiler.compile(content, 'elm/widget1/Test1.elm', function(error) {
+            expect(error).to.not.be.ok;
+          });
+          expected = 'elm-make --yes --output ../test/output/folder/widget1_test1.js Test1.elm';
+          expect(childProcess.execSync).to.have.been.calledWith(expected, {cwd: 'elm/widget1'});
+        });
+      });
+      describe('when independentModules is true, and elmFolder is null', function () {
+        beforeEach(function () {
+          config = JSON.parse(JSON.stringify(baseConfig));
+          config.plugins.elmBrunch.outputFolder = 'test/output/folder';
+          config.plugins.elmBrunch.mainModules = ['widget1/Test1.elm'];
+          config.plugins.elmBrunch.independentModules = true;
+          elmCompiler = new ElmCompiler(config);
+        });
+        it('shells out to the `elm-make` command with the mainModule path as the cwd, and output folder to a level higher', function () {
+          var content = '';
+          elmCompiler.compile(content, 'widget1/Test1.elm', function(error) {
+            expect(error).to.not.be.ok;
+          });
+          expected = 'elm-make --yes --output ../test/output/folder/widget1_test1.js Test1.elm';
+          expect(childProcess.execSync).to.have.been.calledWith(expected, {cwd: 'widget1'});
+        });
+      });
+      describe('when independentModules is true, and mainModule is 2 folders deep', function () {
+        beforeEach(function () {
+          config = JSON.parse(JSON.stringify(baseConfig));
+          config.plugins.elmBrunch.outputFolder = 'test/output/folder';
+          config.plugins.elmBrunch.mainModules = ['category/widget/Test1.elm'];
+          config.plugins.elmBrunch.independentModules = true;
+          elmCompiler = new ElmCompiler(config);
+        });
+        it('shells out to the `elm-make` command with the mainModule path as the cwd, and output folder to 2 levels higher', function () {
+          var content = '';
+          elmCompiler.compile(content, 'category/widget/Test1.elm', function(error) {
+            expect(error).to.not.be.ok;
+          });
+          expected = 'elm-make --yes --output ../../test/output/folder/category_widget_test1.js Test1.elm';
+          expect(childProcess.execSync).to.have.been.calledWith(expected, {cwd: 'category/widget'});
         });
       });
     });
