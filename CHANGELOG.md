@@ -1,3 +1,6 @@
+## 0.11.1
+  - Fix for #42
+
 ## 0.11.0
   - Allow for independent elm-stuff per Main module. Thanks to @neildaemond
 
