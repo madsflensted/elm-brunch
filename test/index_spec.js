@@ -95,6 +95,23 @@ describe('ElmCompiler', function (){
         });
       });
 
+      describe('when more than one mainModule is specified, and each mainModule contains a relative path', function () {
+        beforeEach(function () {
+         config = JSON.parse(JSON.stringify(baseConfig));
+          config.plugins.elmBrunch.mainModules = ['src/Test1.elm', 'src2/Test2.elm'];
+          config.plugins.elmBrunch.elmFolder = 'elm';
+          elmCompiler = new ElmCompiler(config);
+        });
+
+        it('provides the specified mainModule with widget folder', function () {
+          expect(elmCompiler.elm_config.mainModules.length).to.equal(2);
+          expect(elmCompiler.elm_config.mainModules).to.include('src/Test1.elm');
+          expect(elmCompiler.elm_config.mainModules).to.include('src2/Test2.elm');
+          expect(elmCompiler.elm_config.independentModules).to.equal(null);
+
+        });
+      });
+
       describe('when more than one mainModule is specified, independentModules is true, and each mainModule contains the relative widget path', function () {
         beforeEach(function () {
           config = JSON.parse(JSON.stringify(baseConfig));
@@ -112,6 +129,7 @@ describe('ElmCompiler', function (){
         });
       });
     });
+
 
     describe('elmFolder', function () {
       describe('when an elmFolder is not specified', function () {
@@ -240,6 +258,38 @@ describe('ElmCompiler', function (){
         expected = 'elm-make --yes --output test/output/folder/test.js Test.elm';
         expect(childProcess.execSync).to.have.been.calledWith(expected, {cwd: 'test/elm/folder'});
       });
+
+    });
+
+    describe('when an elm folder has been given, mainModule contains relative path, and independentModules is false', function () {
+      beforeEach(function () {
+        config = JSON.parse(JSON.stringify(sampleConfig));
+        config.plugins.elmBrunch.elmFolder = 'test/elm/folder';
+        config.plugins.elmBrunch.mainModules = ['src/Test.elm'];
+        config.plugins.elmBrunch.independentModules = false;
+        elmCompiler = new ElmCompiler(config);
+      });
+
+      it('shells out to the `elm-make` command with the specified elm folder as the cwd', function () {
+        var content = '';
+        elmCompiler.compile(content, 'File.elm', function(error) {
+          expect(error).to.not.be.ok;
+        });
+        elmCompiler.compile(content, 'File.elm', function(error) {
+          expect(error).to.not.be.ok;
+        });
+        expected = 'elm-make --yes --output test/output/folder/test.js src/Test.elm';
+        expect(childProcess.execSync).to.have.been.calledWith(expected, {cwd: 'test/elm/folder'});
+      });
+
+      it('normalises the brunch file path to the elmFolder path', function () {
+        var content = '';
+        elmCompiler.compile(content, 'test/elm/folder/src/Test.elm', function(error) {
+          expect(error).to.not.be.ok;
+        });
+        expected = 'elm-make --yes --output test/output/folder/test.js src/Test.elm';
+        expect(childProcess.execSync).to.have.been.calledWith(expected, {cwd: 'test/elm/folder'});
+     });
 
     });
 

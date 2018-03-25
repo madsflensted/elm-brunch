@@ -66,9 +66,10 @@
                 else
                     elmFolder = elmFolder + path.sep + path.dirname(src);
             }
+            src = path.basename(src);
           }
           return elmCompile ( executablePath
-                            , path.basename(src)
+                            , src
                             , elmFolder
                             , path.join(outputFolder, moduleName + '.js')
                             , makeParameters
