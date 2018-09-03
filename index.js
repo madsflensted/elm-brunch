@@ -105,7 +105,7 @@
     info += ', to ' + outputFile;
     console.log(info);
 
-    const params = ['--yes']  //  Reply 'yes' to all automated prompts
+    const params = []  //  Reply 'yes' to all automated prompts
                   .concat(makeParameters) // other options from brunch-config.js
                   .concat(['--output', outputFile , srcFile ]);
 
