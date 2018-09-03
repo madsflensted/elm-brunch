@@ -49,7 +49,7 @@
           return callback(null, '');
         }
       }
-      var elmMake = this.elm_config.elmMake + ( elm_config.optimize ? " --optimize" : "" );
+      var elmMake = this.elm_config.elmMake + ( this.elm_config.optimize ? " --optimize" : "" );
       var executablePath = this.elm_config.executablePath;
       var outputFolder = this.elm_config.outputFolder;
       var independentModules = this.elm_config.independentModules;
