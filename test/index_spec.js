@@ -191,6 +191,18 @@ describe('ElmCompiler', function (){
         });
       });
     });
+
+    describe('elmMake', function () {
+      describe('when no elmMake is specified', function () {
+        beforeEach(function () {
+          elmCompiler = new ElmCompiler(baseConfig);
+        });
+
+        it('defaults to `elm make`', function () {
+          expect(elmCompiler.elm_config.elmMake).to.equal('elm make');
+        });
+      });
+    });
   });
 
 
