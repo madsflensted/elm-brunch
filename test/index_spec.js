@@ -191,6 +191,54 @@ describe('ElmCompiler', function (){
         });
       });
     });
+
+    describe('elmMake', function () {
+      describe('when no elmMake is specified', function () {
+        beforeEach(function () {
+          elmCompiler = new ElmCompiler(baseConfig);
+        });
+
+        it('defaults to `elm make`', function () {
+          expect(elmCompiler.elm_config.elmMake).to.equal('elm make');
+        });
+      });
+
+      describe('when an elmMake is specified', function () {
+        beforeEach(function () {
+          config = JSON.parse(JSON.stringify(baseConfig));
+          config.plugins.elmBrunch.elmMake = 'elm-make';
+          elmCompiler = new ElmCompiler(config);
+        });
+
+        it('uses provided command for building', function () {
+          expect(elmCompiler.elm_config.elmMake).to.equal('elm-make');
+        });
+      });
+    });
+
+    describe('optimize', function () {
+      describe('when no optimize flag is specified', function () {
+        beforeEach(function () {
+          elmCompiler = new ElmCompiler(baseConfig);
+        });
+
+        it('defaults to false', function () {
+          expect(elmCompiler.elm_config.optimize).to.equal(false);
+        });
+      });
+
+      describe('when optimize is set to true', function () {
+        beforeEach(function () {
+          config = JSON.parse(JSON.stringify(baseConfig));
+          config.plugins.elmBrunch.optimize = true;
+          elmCompiler = new ElmCompiler(config);
+        });
+
+        it('follows the set value', function () {
+          expect(elmCompiler.elm_config.optimize).to.equal(true);
+        });
+      });
+    });
   });
 
 
@@ -217,7 +265,7 @@ describe('ElmCompiler', function (){
         elmCompiler = new ElmCompiler(config);
       });
 
-      it('shells out to the `elm-make` command with a null cwd', function () {
+      it('shells out to the `elm make` command with a null cwd', function () {
         var content = '';
         elmCompiler.compile(content, 'File.elm', function(error, data) {
           expect(error).to.not.be.ok;
@@ -226,7 +274,7 @@ describe('ElmCompiler', function (){
         elmCompiler.compile(content, 'File.elm', function(error) {
           expect(error).to.not.be.ok;
         });
-        expected = 'elm-make --yes --output test/output/folder/test.js Test.elm';
+        expected = 'elm make --output test/output/folder/test.js Test.elm';
         expect(childProcess.execSync).to.have.been.calledWith(expected, {cwd: null});
       });
     });
@@ -238,7 +286,7 @@ describe('ElmCompiler', function (){
         elmCompiler = new ElmCompiler(config);
       });
 
-      it('shells out to the `elm-make` command with the specified elm folder as the cwd', function () {
+      it('shells out to the `elm make` command with the specified elm folder as the cwd', function () {
         var content = '';
         elmCompiler.compile(content, 'File.elm', function(error) {
           expect(error).to.not.be.ok;
@@ -246,7 +294,7 @@ describe('ElmCompiler', function (){
         elmCompiler.compile(content, 'File.elm', function(error) {
           expect(error).to.not.be.ok;
         });
-        expected = 'elm-make --yes --output test/output/folder/test.js Test.elm';
+        expected = 'elm make --output test/output/folder/test.js Test.elm';
         expect(childProcess.execSync).to.have.been.calledWith(expected, {cwd: 'test/elm/folder'});
       });
 
@@ -255,7 +303,7 @@ describe('ElmCompiler', function (){
         elmCompiler.compile(content, 'test/elm/folder/Test.elm', function(error) {
           expect(error).to.not.be.ok;
         });
-        expected = 'elm-make --yes --output test/output/folder/test.js Test.elm';
+        expected = 'elm make --output test/output/folder/test.js Test.elm';
         expect(childProcess.execSync).to.have.been.calledWith(expected, {cwd: 'test/elm/folder'});
       });
 
@@ -270,7 +318,7 @@ describe('ElmCompiler', function (){
         elmCompiler = new ElmCompiler(config);
       });
 
-      it('shells out to the `elm-make` command with the specified elm folder as the cwd', function () {
+      it('shells out to the `elm make` command with the specified elm folder as the cwd', function () {
         var content = '';
         elmCompiler.compile(content, 'File.elm', function(error) {
           expect(error).to.not.be.ok;
@@ -278,7 +326,7 @@ describe('ElmCompiler', function (){
         elmCompiler.compile(content, 'File.elm', function(error) {
           expect(error).to.not.be.ok;
         });
-        expected = 'elm-make --yes --output test/output/folder/test.js src/Test.elm';
+        expected = 'elm make --output test/output/folder/test.js src/Test.elm';
         expect(childProcess.execSync).to.have.been.calledWith(expected, {cwd: 'test/elm/folder'});
       });
 
@@ -287,7 +335,7 @@ describe('ElmCompiler', function (){
         elmCompiler.compile(content, 'test/elm/folder/src/Test.elm', function(error) {
           expect(error).to.not.be.ok;
         });
-        expected = 'elm-make --yes --output test/output/folder/test.js src/Test.elm';
+        expected = 'elm make --output test/output/folder/test.js src/Test.elm';
         expect(childProcess.execSync).to.have.been.calledWith(expected, {cwd: 'test/elm/folder'});
      });
 
@@ -315,7 +363,7 @@ describe('ElmCompiler', function (){
           elmCompiler.compile(content, 'Test.elm', function(error) {
             expect(error).to.not.be.ok;
           });
-          expected = 'elm-make --yes --output test/output/folder/test.js Test.elm';
+          expected = 'elm make --output test/output/folder/test.js Test.elm';
           expect(childProcess.execSync).to.have.been.calledWith(expected, {cwd: null});
         });
       });
@@ -332,7 +380,7 @@ describe('ElmCompiler', function (){
           elmCompiler.compile(content, 'Test.elm', function(error) {
             expect(error).to.not.be.ok;
           });
-          expected = 'elm-make --yes --output test/output/folder/test.js Test.elm';
+          expected = 'elm make --output test/output/folder/test.js Test.elm';
           expect(childProcess.execSync).to.have.been.calledWith(expected, {cwd: null});
         });
       });
@@ -350,7 +398,7 @@ describe('ElmCompiler', function (){
           elmCompiler.compile(content, 'Test1.elm', function(error) {
             expect(error).to.not.be.ok;
           });
-          expected = 'elm-make --yes --output test/output/folder/test.js Test1.elm Test2.elm';
+          expected = 'elm make --output test/output/folder/test.js Test1.elm Test2.elm';
           expect(childProcess.execSync).to.have.been.calledWith(expected, {cwd: null});
         });
       });
@@ -363,12 +411,12 @@ describe('ElmCompiler', function (){
           config.plugins.elmBrunch.independentModules = true;
           elmCompiler = new ElmCompiler(config);
         });
-        it('shells out to the `elm-make` command with the mainModule path as the cwd, and output folder to a level higher', function () {
+        it('shells out to the `elm make` command with the mainModule path as the cwd, and output folder to a level higher', function () {
           var content = '';
           elmCompiler.compile(content, 'elm/widget1/Test1.elm', function(error) {
             expect(error).to.not.be.ok;
           });
-          expected = 'elm-make --yes --output ../test/output/folder/widget1_test1.js Test1.elm';
+          expected = 'elm make --output ../test/output/folder/widget1_test1.js Test1.elm';
           expect(childProcess.execSync).to.have.been.calledWith(expected, {cwd: 'elm/widget1'});
         });
       });
@@ -380,12 +428,12 @@ describe('ElmCompiler', function (){
           config.plugins.elmBrunch.independentModules = true;
           elmCompiler = new ElmCompiler(config);
         });
-        it('shells out to the `elm-make` command with the mainModule path as the cwd, and output folder to a level higher', function () {
+        it('shells out to the `elm make` command with the mainModule path as the cwd, and output folder to a level higher', function () {
           var content = '';
           elmCompiler.compile(content, 'widget1/Test1.elm', function(error) {
             expect(error).to.not.be.ok;
           });
-          expected = 'elm-make --yes --output ../test/output/folder/widget1_test1.js Test1.elm';
+          expected = 'elm make --output ../test/output/folder/widget1_test1.js Test1.elm';
           expect(childProcess.execSync).to.have.been.calledWith(expected, {cwd: 'widget1'});
         });
       });
@@ -397,12 +445,12 @@ describe('ElmCompiler', function (){
           config.plugins.elmBrunch.independentModules = true;
           elmCompiler = new ElmCompiler(config);
         });
-        it('shells out to the `elm-make` command with the mainModule path as the cwd, and output folder to 2 levels higher', function () {
+        it('shells out to the `elm make` command with the mainModule path as the cwd, and output folder to 2 levels higher', function () {
           var content = '';
           elmCompiler.compile(content, 'category/widget/Test1.elm', function(error) {
             expect(error).to.not.be.ok;
           });
-          expected = 'elm-make --yes --output ../../test/output/folder/category_widget_test1.js Test1.elm';
+          expected = 'elm make --output ../../test/output/folder/category_widget_test1.js Test1.elm';
           expect(childProcess.execSync).to.have.been.calledWith(expected, {cwd: 'category/widget'});
         });
       });
