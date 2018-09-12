@@ -1,3 +1,6 @@
+## 0.12.0
+  - Support for Elm 0.19. Thanks to @Voronchuk and @John-Goff
+
 ## 0.11.1
   - Fix for #42
 
@@ -24,7 +27,7 @@
 ## 0.5.0
   - Enable seting of additional make parameters. Thanks to @ilkosta
 
-## 0.4.4 
+## 0.4.4
   - Switch to sync compilation, thanks to @joakimk
 
 ## 0.4.3
