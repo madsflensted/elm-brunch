@@ -14,6 +14,8 @@
 
     function ElmCompiler(config) {
       var elm_config = {};
+      elm_config.optimize = (config.plugins.elmBrunch || {}).optimize || false;
+      elm_config.elmMake = (config.plugins.elmBrunch || {}).elmMake || "elm make";
       elm_config.executablePath = (config.plugins.elmBrunch || {}).executablePath || "";
       elm_config.outputFolder = (config.plugins.elmBrunch || {}).outputFolder || path.join(config.paths.public, 'js');
       elm_config.outputFile = (config.plugins.elmBrunch || {}).outputFile || null;
@@ -47,6 +49,7 @@
           return callback(null, '');
         }
       }
+      var elmMake = this.elm_config.elmMake + ( this.elm_config.optimize ? " --optimize" : "" );
       var executablePath = this.elm_config.executablePath;
       var outputFolder = this.elm_config.outputFolder;
       var independentModules = this.elm_config.independentModules;
@@ -70,6 +73,7 @@
           }
           return elmCompile ( executablePath
                             , src
+                            , elmMake
                             , elmFolder
                             , path.join(outputFolder, moduleName + '.js')
                             , makeParameters
@@ -78,6 +82,7 @@
       } else {
         return elmCompile ( executablePath
                           , modules
+                          , elmMake
                           , elmFolder
                           , path.join(outputFolder, outputFile)
                           , makeParameters
@@ -89,7 +94,7 @@
 
   })();
 
-  elmCompile = function(executablePath, srcFile, elmFolder, outputFile, makeParameters, callback) {
+  elmCompile = function(executablePath, srcFile, elmMake, elmFolder, outputFile, makeParameters, callback) {
     if (Array.isArray(srcFile)) {
       srcFile = srcFile.join(' ');
     }
@@ -100,11 +105,11 @@
     info += ', to ' + outputFile;
     console.log(info);
 
-    const params = ['--yes']  //  Reply 'yes' to all automated prompts
+    const params = []  //  Reply 'yes' to all automated prompts
                   .concat(makeParameters) // other options from brunch-config.js
                   .concat(['--output', outputFile , srcFile ]);
 
-    var executable = path.join(executablePath, 'elm-make');
+    var executable = path.join(executablePath, elmMake);
     var command = executable + ' ' + params.join(' ');
 
     try {
