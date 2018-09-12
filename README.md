@@ -59,7 +59,15 @@ paths: {
         outputFile: 'elm.js',
 
         // (optional) add some parameters that are passed to elm-make
-        makeParameters: ['--warn']
+        makeParameters: ['--warn'],
+        
+        // (optional) Change the command that the compiler is ran with.
+        //            Set to `elm-make` for backwards compatibility
+        elmMake: "elm-make",
+        
+        // (optional) Add `--optimize` to compile for production
+        //            Note: you cannot use this option and `--debug` in makeParameters simultaneously
+        optimize: true
       }
    }
 
