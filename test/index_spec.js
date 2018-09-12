@@ -202,6 +202,18 @@ describe('ElmCompiler', function (){
           expect(elmCompiler.elm_config.elmMake).to.equal('elm make');
         });
       });
+
+      describe('when an elmMake is specified', function () {
+        beforeEach(function () {
+          config = JSON.parse(JSON.stringify(baseConfig));
+          config.plugins.elmBrunch.elmMake = 'elm-make';
+          elmCompiler = new ElmCompiler(config);
+        });
+
+        it('uses provided command for building', function () {
+          expect(elmCompiler.elm_config.elmMake).to.equal('elm-make');
+        });
+      });
     });
   });
 
