@@ -215,6 +215,30 @@ describe('ElmCompiler', function (){
         });
       });
     });
+
+    describe('optimize', function () {
+      describe('when no optimize flag is specified', function () {
+        beforeEach(function () {
+          elmCompiler = new ElmCompiler(baseConfig);
+        });
+
+        it('defaults to false', function () {
+          expect(elmCompiler.elm_config.optimize).to.equal(false);
+        });
+      });
+
+      describe('when optimize is set to true', function () {
+        beforeEach(function () {
+          config = JSON.parse(JSON.stringify(baseConfig));
+          config.plugins.elmBrunch.optimize = true;
+          elmCompiler = new ElmCompiler(config);
+        });
+
+        it('follows the set value', function () {
+          expect(elmCompiler.elm_config.optimize).to.equal(true);
+        });
+      });
+    });
   });
 
 
