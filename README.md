@@ -32,12 +32,12 @@ paths: {
       ...
 
       elmBrunch: {
-        // (required) Set to the elm file(s) containing your "main" function `elm make` 
+        // (required) Set to the elm file(s) containing your "main" function `elm make`
         //            handles all elm dependencies relative to `elmFolder`
         mainModules: ['source/path/YourMainModule.elm'],
 
-        // (optional) Set to keep an independent elm-stuff folder per mainModule. If 
-        //            mainModules is an array, then the 'source/path' of each mainModule 
+        // (optional) Set to keep an independent elm-stuff folder per mainModule. If
+        //            mainModules is an array, then the 'source/path' of each mainModule
         //            will be appended to your elm-folder, allowing each subfolder to keep their
         //            own set of elm dependencies.
         independentModules: true,
@@ -46,7 +46,7 @@ paths: {
         executablePath: '../../node_modules/elm/binwrappers',
 
         // (optional) Set to path where elm-package.json is located, defaults to project root
-        //            if your elm files are not in /app then make sure to configure 
+        //            if your elm files are not in /app then make sure to configure
         //            paths.watched in main brunch config
         elmFolder: 'path/to/elm-files',
 
@@ -54,17 +54,17 @@ paths: {
         // relative to `elmFolder`
         outputFolder: 'some/path/',
 
-        // (optional) If specified, all mainModules will be compiled to a single file 
+        // (optional) If specified, all mainModules will be compiled to a single file
         //            This is merged with outputFolder.
         outputFile: 'elm.js',
 
         // (optional) add some parameters that are passed to elm-make
         makeParameters: ['--warn'],
-        
+
         // (optional) Change the command that the compiler is ran with.
         //            Set to `elm-make` for backwards compatibility
         elmMake: "elm-make",
-        
+
         // (optional) Add `--optimize` to compile for production
         //            Note: you cannot use this option and `--debug` in makeParameters simultaneously
         optimize: true
@@ -81,6 +81,7 @@ YourMainModule.elm => outputFolder/yourmainmodule.js
 Note: You should update the "source-directories" property in the elm-package.json file if you want to compile multi-file elm projects.
 Then configure elm-brunch:
 
+Note: this plugin does not pass the generated javascript code to brunch, so you need to either directly include the generated js file in your html or use some other method to bundle it into your final package.
 
 ## Examples
 
